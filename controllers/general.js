@@ -15,7 +15,7 @@ router.use(clientSessions({
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '../public/img/uploads/')
+        cb(null, 'assets/livelyfitfoods/public/img/uploads/')
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname));
