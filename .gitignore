@@ -1,0 +1,5 @@
+node_modules/*
+Assignment*
+.DS_STORE
+.vscode/*
+config/*
