@@ -20,7 +20,15 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const imageFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) {
+      return cb(null, true);
+    } else {
+      return cb(new Error('Not an image! Please upload an image.', 400), false);
+    }
+  };
+
+const upload = multer({ storage: storage, fileFilter: imageFilter });
 
 
 /* -------- login session functions -------- */
@@ -51,11 +59,14 @@ router.get("/", (req,res)=>{
 });
 
 router.get("/meals", (req,res)=>{
-    const packagesDB = new mealsDB();
-    res.render("meals", {
-        title: "Meals Packages",
-        package: packagesDB.getPackage(),
-        user: req.session.user
+    db.getMeals().then((data) =>{
+        res.render("meals", {
+            title: "Meals Packages",
+            package: (data.length!=0 ? data : undefined),
+            user: req.session.user
+        })
+    }).catch((err)=>{
+        console.log(`Error retrieving meals data ${err}`);
     })
 });
 
@@ -152,12 +163,14 @@ router.post("/login", (req,res)=>{
 });
 
 router.post("/meals/add", upload.single("image"), (req,res)=>{
+    // var fileData = req.file;
     const mealErrors = [];
     if(mealErrors.length > 0){
         res.render("addMeals", {
             errors: mealErrors
         });
     } else {
+        req.body.img = req.file.filename;
         db.addMeal(req.body).then(()=>{
             res.redirect("/meals/add");
         }).catch((err)=>{

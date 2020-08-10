@@ -89,6 +89,19 @@ module.exports.addMeal = function(data){ // create route - meals
     });
 }
 
+module.exports.getMeals = function(){ // READ route - meals
+    return new Promise((resolve, reject) => {
+        Meals.find()
+        .exec()
+        .then((foundMeals) => {
+            resolve(foundMeals.map(item=>item.toObject()));
+        }).catch((err) => {
+            console.log(`Errorr rrettrieving meals`);
+            console.log(err);
+        })
+    })
+}
+
 module.exports.getUsers = function(){ // READ - users
     return new Promise((resolve, reject) => {
         Users.find()
