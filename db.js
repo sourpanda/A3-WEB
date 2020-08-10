@@ -89,7 +89,7 @@ module.exports.addMeal = function(data){ // create route - meals
     });
 }
 
-module.exports.getUsers = function(){
+module.exports.getUsers = function(){ // READ - users
     return new Promise((resolve, reject) => {
         Users.find()
         .exec()
@@ -144,7 +144,7 @@ module.exports.validateUser = (data) => {
     });
 }
 
-module.exports.editUser = (editData)=>{
+module.exports.editUser = (editData)=>{ // UPDATE route - users
     return new Promise((resolve, reject) =>{
         bcrypt.genSalt(10)
         .then(salt=>bcrypt.hash(editData.password,salt))
@@ -171,7 +171,7 @@ module.exports.editUser = (editData)=>{
     });
 }
 
-module.exports.deleteUserByEmail = (inEmail)=>{
+module.exports.deleteUserByEmail = (inEmail)=>{ // REMOVE route - users
     return new Promise((resolve, reject)=>{
         Users.deleteOne({email: inEmail})
         .exec()

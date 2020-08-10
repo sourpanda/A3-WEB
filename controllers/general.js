@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const mealsDB = require('../model/meals.js');
+const mealsDB = require('../model/meals.js')
 const db = require('../db.js');
 const clientSessions = require('client-sessions');
 const multer = require('multer');
-const path = require("path");
+const path = require('path');
 
 router.use(clientSessions({ 
     cookieName: "session",
@@ -14,12 +14,8 @@ router.use(clientSessions({
 }));
 
 const storage = multer.diskStorage({
-    destination: "../public/img/",
+    destination: "../public/img/uploads/",
     filename: function (req, file, cb) {
-        // we write the filename as the current date down to the millisecond
-        // in a large web service this would possibly cause a problem if two people
-        // uploaded an image at the exact same time. A better way would be to use GUID's for filenames.
-        // this is a simple example.
         cb(null, Date.now() + path.extname(file.originalname));
     }
 });
@@ -163,10 +159,6 @@ router.post("/meals/add", upload.single("image"), (req,res)=>{
         });
     } else {
         db.addMeal(req.body).then(()=>{
-            let formData = req.body;
-            let formFile = req.file;
-            let dataReceived = "Data: " + JSON.stringify(formData) + "<br><br>" + "Image: <img src='/public/img/" + JSON.stringify(formFile) + "'/>";
-            res.send(dataReceived);
             res.redirect("/meals/add");
         }).catch((err)=>{
             console.log(`Error adding meal: ${err}`);
