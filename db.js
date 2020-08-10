@@ -97,7 +97,7 @@ module.exports.getMeals = function(){ // READ route - meals
             resolve(foundMeals.map(item=>item.toObject()));
         }).catch((err) => {
             console.log(`Errorr rrettrieving meals`);
-            console.log(err);
+            reject(err);
         })
     })
 }
