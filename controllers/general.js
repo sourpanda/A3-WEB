@@ -14,7 +14,9 @@ router.use(clientSessions({
 }));
 
 const storage = multer.diskStorage({
-    destination: "../public/img/uploads/",
+    destination: function (req, file, cb) {
+        cb(null, '../public/img/uploads/')
+    },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname));
     }
