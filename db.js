@@ -249,3 +249,29 @@ module.exports.getMealById = function(data){
         })
     })
 }
+
+module.exports.editMeal = (editData)=>{ // UPDATE route - meal
+    console.log(editData);
+    return new Promise((resolve, reject) =>{
+        Meals.updateOne(
+            {_id: editData},
+            {$set: {
+                name: editData.name,
+                price: editData.price,
+                count: editData.count,
+                category: editData.category,
+                top: editData.top,
+                description: editData.description
+                }
+            }).exec()
+            .then(()=>{
+                console.log(`${editData.name} has been updated!`);
+                resolve();
+            }).catch((err)=>{
+                console.log(`Error updating. ${err}`);
+                reject(err);
+            });
+        }).catch(() =>{
+            reject(`error updating meal`);
+        });
+}

@@ -167,8 +167,35 @@ router.get("/meals/:id", (req, res) =>{
             title: gotMeal.name,
             meal: gotMeal,
             layout: "fs",
+            user: req.session.user,
+            admin: (req.session.user.admin == true ? true : false)
+        })
+    }).catch((err) =>{
+        console.log(err);
+        res.redirect("/meals");
+    })
+});
+
+router.get("/meals/:id/edit", ensureAdmin, (req, res) =>{
+    db.getMealById({_id: req.params.id})
+    .then((gotMeal)=>{
+        res.render("editMeal", {
+            title: gotMeal.name,
+            meal: gotMeal,
+            layout: "fs",
             user: req.session.user
         })
+    }).catch((err) =>{
+        console.log(err);
+        res.redirect("/meals");
+    })
+});
+
+router.post("/meals/:id/edit", ensureAdmin, (req, res) =>{
+    console.log(req.body);
+    db.editMeal(req.body)
+    .then((gotMeal)=>{
+        gotMeal.editMeal(data);
     }).catch((err) =>{
         console.log(err);
         res.redirect("/meals");

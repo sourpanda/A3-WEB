@@ -41,6 +41,9 @@
         <p>{{meal.name}}</p>
         {{#if user}}
         <button type="button" onclick='addToCart("{{meal.name}}")' class="btn btn-lg btn-info">Add to cart</button>
+            {{#if admin}}
+            <a href="/meals/{{meal._id}}/edit" class="btn btn-lg btn-info">Edit meal details</a>
+            {{/if}}
         </div>
         <div class="col-auto">
             <a href="/cart"><svg width="3em" height="3em" viewBox="0 0 16 16" class="bi bi-cart2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
