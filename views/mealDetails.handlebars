@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Fit Food</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script>
+            function makeAJAXRequest(method, url, data){
+                if(data){ // Make an AJAX call using the provided data & method
+                    console.log("Adding: "+data.name);
+                    fetch(url, { 
+                        method: method,
+                        body: JSON.stringify(data),
+                        headers: { 'Content-Type': 'application/json'} 
+                    })
+                    .then(response => response.json())
+                    .then(json => {//responds with number of items in cart 
+                        //changes the number beside the cart
+                        $("span.glyphicon").text(`${json.data}`);
+                    }).catch((err)=>{
+                        console.log("Error Fetching");
+                        alert(err.message);
+                    }); 
+
+                }else{  // Make an AJAX call without providing data using the method
+                    fetch(url, { method: method })
+                    .then(response => response.json())
+                    .then(json => {
+                        console.log(json);   
+                    }).catch((message)=>{
+                        alert(message);
+                    });
+                }
+            }
+            //makes ajax call to add a certain item by name to cart
+            function addToCart(data){
+                console.log("Calling add with: "+data);
+                 makeAJAXRequest("POST", "/addProduct", {name: data});
+            }
+
+        </script>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet"> 
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+    <body>
+        <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light justify-content-between">
+            <a class="navbar-brand" href="/">LFF</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/meals">Meals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">Register</a>
+                    </li>
+                </ul>
+                <form action="/logout" class="form-inline ml-md-auto">
+                    <button type="button" class="btn btn-outline-danger">Log Out</button>
+                </form>
+
+            </div>
+        </nav>
+
+
+        <div class="jumbotron jumbotron-fluid centre jumbo-head">
+            <div class="container">
+                <div class="row centre">
+                    <div class="col-lg">
+                        <h1 class="shadowed">Meals and grocery delivered</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+<div class="row justify-content-center">
+    <div class="col-auto">
+        
+    <button type="button" onclick='addToCard("{{name}}")'>Add to cart</button>
+    </div>
+</div>
+
+
+
+

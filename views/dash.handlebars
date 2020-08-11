@@ -8,7 +8,7 @@
     
     {{#if admin}}
 
-    <div class="col-4">
+    <div class="col-8">
         <h2>Account Information</h2>
         <ul class="list-group">
             <li class="list-group-item">Name: {{user.first_name}} {{user.last_name}}</li>
@@ -16,6 +16,8 @@
             <li class="list-group-item">Email: {{user.email}}</li>
             <li class="list-group-item">Date created: {{user.createdOn}}</li>
         </ul>
+        <hr>
+        <h5>Admin Tools</h5>
         <hr>
         <a href="/meals/add" class="btn btn-success">Add Meals</a>
     

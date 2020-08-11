@@ -69,34 +69,14 @@ module.exports.addUser = function(data){ // create route - users
     });
 }
 
-module.exports.addMeal = function(data){ // create route - meals
-    return new Promise((resolve, reject) =>{
-        for(var formEntry in data){
-            if(data[formEntry] == "")
-            data[formEntry] = null;
-        }
-        let newMeal = new Meals(data);
-        newMeal.save((err) =>{
-            if(err){
-                console.log(`Error ocurred adding a meal: ${err}`);
-                reject(err);
-            } else {
-                console.log(`Added meal: ${newMeal.name}`);
-                resolve();
-            }
-        })
-
-    });
-}
-
-module.exports.getMeals = function(){ // READ route - meals
+module.exports.getPkgs = function(){ // READ route - meals
     return new Promise((resolve, reject) => {
-        Meals.find()
+        Meals.find({count: { $gt: 1 }})
         .exec()
         .then((foundMeals) => {
             resolve(foundMeals.map(item=>item.toObject()));
         }).catch((err) => {
-            console.log(`Errorr rrettrieving meals`);
+            console.log(`Error retrieving packages`);
             reject(err);
         })
     })
@@ -195,4 +175,51 @@ module.exports.deleteUserByEmail = (inEmail)=>{ // REMOVE route - users
             reject();
         });
     });
+}
+
+
+module.exports.addMeal = function(data){ // create route - meals
+    return new Promise((resolve, reject) =>{
+        for(var formEntry in data){
+            if(data[formEntry] == "")
+            data[formEntry] = null;
+        }
+        let newMeal = new Meals(data);
+        newMeal.save((err) =>{
+            if(err){
+                console.log(`Error ocurred adding a meal: ${err}`);
+                reject(err);
+            } else {
+                console.log(`Added meal: ${newMeal.name}`);
+                resolve();
+            }
+        })
+
+    });
+}
+
+module.exports.getMeals = function(){ // READ route - meals
+    return new Promise((resolve, reject) => {
+        Meals.find({count: { $lt: 2 } })
+        .exec()
+        .then((foundMeals) => {
+            resolve(foundMeals.map(item=>item.toObject()));
+        }).catch((err) => {
+            console.log(`Error retrieving single meals`);
+            reject(err);
+        })
+    })
+}
+
+module.exports.getMeal = function(data){
+    return new Promise((resolve, reject) =>{
+        Meals.find({name: data})
+        .exec()
+        .then((foundMeal)=>{
+            resolve(foundMeal.toObject());
+        }).catch((err) =>{
+            console.log(`Can't find ${data}`);
+            reject(err);
+        })
+    })
 }

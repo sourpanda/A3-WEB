@@ -111,6 +111,13 @@ p.error{
     font-size: 0.8em;
 }
 
+/* navbar */
+/* 
+.navbar{
+    background-color: #17a2b8 !important;
+} */
+
+
 /* footer link styles */
 #footer h5{
     text-align: left;

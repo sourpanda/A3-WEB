@@ -10,7 +10,8 @@ const PORT = process.env.PORT;
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
-app.use(express.static(__dirname + './public/'));
+app.enable('view cache');
+app.use(express.static(__dirname + '/public/'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/", controllerG);

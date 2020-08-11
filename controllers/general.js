@@ -1,10 +1,11 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const router = express.Router();
-const mealsDB = require('../model/meals.js')
 const db = require('../db.js');
 const clientSessions = require('client-sessions');
 const multer = require('multer');
 const path = require('path');
+const cart = require('../cart.js');
 
 router.use(clientSessions({ 
     cookieName: "session",
@@ -12,10 +13,11 @@ router.use(clientSessions({
     duration: 2 * 60 * 1000,
     activeDuration: 1000 * 60
 }));
+router.use(bodyParser.json());
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '/tmp/img/uploads/')
+        cb(null, './public/img/uploads/')
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname));
@@ -54,14 +56,19 @@ if (!req.session.user || !req.session.user.admin) {
 /* -------- routes -------- */
 
 router.get("/", (req,res)=>{
-    res.render("home", {
-        title: "Welcome",
-        user: req.session.user
+    db.getMeals().then((data) =>{
+        res.render("home", {
+            title: "Welcome",
+            meal: (data.length!=0 ? data : undefined),
+            user: req.session.user
+        })
+    }).catch((err)=>{
+        console.log(`Error on home ${err}`);
     })
 });
 
 router.get("/meals", (req,res)=>{
-    db.getMeals().then((data) =>{
+    db.getPkgs().then((data) =>{
         res.render("meals", {
             title: "Meals Packages",
             package: (data.length!=0 ? data : undefined),
@@ -93,6 +100,7 @@ router.get("/logout", (req,res)=>{
 router.get("/dash", ensureLogin, (req,res)=>{
     res.render("dash", {
         title: `Dashboard`,
+        layout: fs,
         user: req.session.user,
         admin: (req.session.user.admin == true ? true : false)
     })
@@ -122,6 +130,42 @@ router.get("/meals/add", ensureAdmin, (req,res)=>{
     res.render("addMeal", {
         user: req.session.user
     });
+});
+
+router.get("/cart",(req,res)=>{
+    var cartData = {
+        cart:[],
+        total:0
+    };
+    cart.getCart().then((items)=>{
+        cartData.cart = items;
+        cart.checkout().then((total)=>{
+            cartData.total = total;
+            res.render("checkout", {data:cartData, layout:false});
+        }).catch((err)=>{
+            res.send("There was an error getting total: " +err);
+        });
+    })
+    .catch((err)=>{
+        res.send("Err adding to cart: " + err );
+    });
+});
+
+// AJAX 
+
+router.post("/addMeal", (req,res)=>{
+    console.log("Adding meal to cart: " + req.body.name);
+    db.getMeal(req.body.name)
+    .then((item)=>{
+        cart.addItem(item)
+        .then((numItems)=>{
+            res.json({data: numItems});
+        }).catch(()=>{
+            res.json({message:"error adding"});
+        })
+    }).catch(()=>{
+        res.json({message: "No Items found"})
+    })
 });
 
 // POST REQUESTS 

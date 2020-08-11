@@ -36,25 +36,12 @@
 
     <div class="container-fluid"> 
         <div class="row justify-content-center top-pad">
+            {{#each meal}}
             <div class="col-auto feature">
-                <img src="img/meal1.png">
-                <p class="strong">Veggie Fritters</p>
-                <p>$9.50</p>
+                <img src="img/uploads/{{this.img}}">
+                <p class="strong">{{this.name}}</p>
+                <p>${{this.price}}</p>
             </div>
-            <div class="col-auto feature">
-                <img src="img/meal2.png">
-                <p class="strong">Fettucini Alfredo with Tempeh</p>
-                <p>$11.00</p>
-            </div>
-            <div class="col-auto feature">
-                <img src="img/meal3.png">
-                <p class="strong">Oriental-Style Mix</p>
-                <p>$9.00</p>
-            </div>
-            <div class="col-auto feature">
-                <img src="img/meal4.png">
-                <p class="strong">Veggie Medley</p>
-                <p>$10.00</p>
-            </div>
+            {{/each}}
         </div>
         <br style="line-height: 3em;">
