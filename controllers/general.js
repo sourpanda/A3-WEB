@@ -4,6 +4,7 @@ const router = express.Router();
 const db = require('../db.js');
 const clientSessions = require('client-sessions');
 const multer = require('multer');
+const path = require('path');
 const cart = require('../cart.js');
 
 router.use(clientSessions({ 
@@ -14,14 +15,14 @@ router.use(clientSessions({
 }));
 router.use(bodyParser.json());
 
-// const storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         cb(null, './public/img/uploads/')
-//     },
-//     filename: function (req, file, cb) {
-//         cb(null, Date.now() + path.extname(file.originalname));
-//     }
-// });
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, '')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
 
 const imageFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image')) {
