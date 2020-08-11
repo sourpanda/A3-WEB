@@ -4,7 +4,6 @@ const app = express();
 const bodyParser = require('body-parser');
 const controllerG = require("./controllers/general.js");
 const db = require('./db.js');
-const cart = require('./cart.js');
 const path = require('path');
 require('dotenv').config({path:"./config/keys.env"});
 const PORT = process.env.PORT;
