@@ -3,14 +3,27 @@
 
 /* general styles */
 
-.jumbotron{
+.jumbotron-one{
     margin-top: 3em;
     background: #fff url('../img/piqsels.com-id-omtxm.jpg') no-repeat center;
+    background-attachment: fixed;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.jumbotron-two{
+    margin-top: 3em;
+    background-image: url("../img/clean-table.jpg");
+    background-attachment: fixed;
+    background-position: bottom;
+    background-repeat: no-repeat;
     background-size: cover;
 }
 #footer{
     text-align: center;
     border-top: 1px solid #e1e1e1;
+    margin-top: 2em;
+    padding-top: 1.5em;
 }
 .footie{
     font-size: 0.8em;
@@ -111,11 +124,26 @@ p.error{
     font-size: 0.8em;
 }
 
+/* cart */
+
+.cart-row{
+    margin-top: 1em;
+    margin-bottom: 1em;    
+}
+
+.cart-item{
+    height: 100px;
+    width: 100px;
+    border: 1px solid #888;
+    border-radius: 0.5em;
+}
+
 /* navbar */
-/* 
-.navbar{
-    background-color: #17a2b8 !important;
-} */
+
+.navbar-blue{
+    background-color: #17a2b8;
+    color: #e1e1e1;
+}
 
 
 /* footer link styles */

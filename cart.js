@@ -1,9 +1,8 @@
 //start off with the cart empty. 
-var userCart = [];
+const userCart = [];
 
 //adds a item from systems to the cart
 module.exports.addItem = (inItem)=>{
-    console.log(`Adding ${inItem.name} to cart`);
     return new Promise((resolve,reject)=>{
         userCart.push(inItem);
         resolve(userCart.length);
@@ -26,7 +25,7 @@ module.exports.removeItem = (inItem)=>{
 //returns the cart array and all items
 module.exports.getCart = ()=>{
     return new Promise((resolve, reject)=>{
-            resolve(userCart);
+        resolve(userCart);
     });
 }
 

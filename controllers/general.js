@@ -56,7 +56,7 @@ if (!req.session.user || !req.session.user.admin) {
 /* -------- routes -------- */
 
 router.get("/", (req,res)=>{
-    db.getMeals().then((data) =>{
+    db.getMeals({top: true}).then((data) =>{
         res.render("home", {
             title: "Welcome",
             meal: (data.length!=0 ? data : undefined),
@@ -100,7 +100,7 @@ router.get("/logout", (req,res)=>{
 router.get("/dash", ensureLogin, (req,res)=>{
     res.render("dash", {
         title: `Dashboard`,
-        layout: fs,
+        layout: 'fs',
         user: req.session.user,
         admin: (req.session.user.admin == true ? true : false)
     })
@@ -132,7 +132,7 @@ router.get("/meals/add", ensureAdmin, (req,res)=>{
     });
 });
 
-router.get("/cart",(req,res)=>{
+router.get("/cart", ensureLogin,(req,res)=>{
     var cartData = {
         cart:[],
         total:0
@@ -141,7 +141,15 @@ router.get("/cart",(req,res)=>{
         cartData.cart = items;
         cart.checkout().then((total)=>{
             cartData.total = total;
-            res.render("checkout", {data:cartData, layout:false});
+            let count = cartData.cart.length;
+            res.render("checkout", {
+                user: req.session.user, 
+                cartContents:cartData.cart, 
+                layout:"fs",
+                title: "Cart",
+                total: total,
+                count: count
+            });
         }).catch((err)=>{
             res.send("There was an error getting total: " +err);
         });
@@ -152,19 +160,49 @@ router.get("/cart",(req,res)=>{
 });
 
 // AJAX 
+router.get("/meals/:id", (req, res) =>{
+    db.getMealById({_id: req.params.id})
+    .then((gotMeal)=>{
+        res.render("mealDetails", {
+            title: gotMeal.name,
+            meal: gotMeal,
+            layout: "fs",
+            user: req.session.user
+        })
+    }).catch((err) =>{
+        console.log(err);
+        res.redirect("/meals");
+    })
+});
 
-router.post("/addMeal", (req,res)=>{
-    console.log("Adding meal to cart: " + req.body.name);
-    db.getMeal(req.body.name)
+router.post("/addProduct", ensureLogin, (req,res)=>{
+    db.getPkg(req.body.name)
     .then((item)=>{
         cart.addItem(item)
         .then((numItems)=>{
             res.json({data: numItems});
         }).catch(()=>{
-            res.json({message:"error adding"});
+            res.json({message:"error adding to cart"});
         })
     }).catch(()=>{
-        res.json({message: "No Items found"})
+        res.json({message: "No Items found"});
+    })
+});
+
+router.post("/removeItem", (req,res)=>{ //return the cart to re-render the page
+    var cartData = {
+        cart:[],
+        total:0
+    };
+    cart.removeItem(req.body.name).then(cart.checkout)
+    .then((inTotal)=>{
+        cartData.total = inTotal;
+        cart.getCart().then((items)=>{
+           cartData.cart = items; 
+           res.json({data: cartData});
+        }).catch((err)=>{res.json({error:err});});
+    }).catch((err)=>{
+        res.json({error:err});
     })
 });
 
@@ -198,6 +236,7 @@ router.post("/login", (req,res)=>{
         db.validateUser(req.body)
         .then((inData) =>{
             req.session.user = inData,
+            req.session.user.cart = cart,
             console.log(`${req.session.user.email} logged in.\n`);
             res.redirect("/dash");
         })
@@ -208,7 +247,7 @@ router.post("/login", (req,res)=>{
     }
 });
 
-router.post("/meals/add", upload.single("image"), (req,res)=>{
+router.post("/meals/add", ensureAdmin, upload.single("image"), (req,res)=>{
     // var fileData = req.file;
     const mealErrors = [];
     if(mealErrors.length > 0){

@@ -82,6 +82,19 @@ module.exports.getPkgs = function(){ // READ route - meals
     })
 }
 
+module.exports.getPkg = function(data){ // READ route - meals
+    return new Promise((resolve, reject) => {
+        Meals.findOne({name: data})
+        .exec()
+        .then((foundPkg) => {
+            resolve(foundPkg.toObject());
+        }).catch((err) => {
+            console.log(`Error retrieving packages`);
+            reject(err);
+        })
+    })
+}
+
 module.exports.getUsers = function(){ // READ - users
     return new Promise((resolve, reject) => {
         Users.find()
@@ -214,6 +227,19 @@ module.exports.getMeals = function(){ // READ route - meals
 module.exports.getMeal = function(data){
     return new Promise((resolve, reject) =>{
         Meals.find({name: data})
+        .exec()
+        .then((foundMeal)=>{
+            resolve(foundMeal.toObject());
+        }).catch((err) =>{
+            console.log(`Can't find ${data}`);
+            reject(err);
+        })
+    })
+}
+
+module.exports.getMealById = function(data){
+    return new Promise((resolve, reject) =>{
+        Meals.findById(data)
         .exec()
         .then((foundMeal)=>{
             resolve(foundMeal.toObject());
